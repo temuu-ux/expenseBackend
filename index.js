@@ -40,13 +40,12 @@ app.get("/user", async (req, res) => {
   res.status(200).send({ messasge: "success" });
 });
 
-app.get("/add-user", async (req, res) => {
+app.post("/add-user", async (req, res) => {
   const newUser = req.body;
-  console.log(newUser);
 
   const client = await pool.connect();
-
-  const Query = `INSERT INTO users (name, age, email) VALUES ('${newUser.name}','${newUser.age}','${newUser.email}');`;
+  console.log("asd");
+  const Query = `INSERT INTO users (name, age, phone, email) VALUES ('${newUser.name}','${newUser.age}','${newUser.phone}','${newUser.email}');`;
   try {
     client.query(Query);
   } catch (e) {
@@ -72,21 +71,49 @@ app.get("/init", async (req, res) => {
   res.status(200).send({ message: "success" });
 });
 
-app.get("/update", async (req, res) => {
-  const newUser = req.body;
-  console.log(newUser);
+app.put("/update", async (req, res) => {
+  // const { name } = req.params;
+  const { name } = req.body;
+  const updatedUser = req.body;
+
   const client = await pool.connect();
   try {
-    client.query(
-      `UPDATE users (name, age, email) SET (${(newUser.name =
-        "boldoo")}','${(newUser.age = 19)}' ,'${(newUser = "gg@.gmail.com")})`
-    );
+    const query = `
+      UPDATE users 
+      SET age = $1, phone = $2, email = $3
+      WHERE name = $4
+    `;
+    const values = [
+      updatedUser.age,
+      updatedUser.phone,
+      updatedUser.email,
+      name,
+    ];
+    await client.query(query, values);
+
+    res.status(200).send({ message: "User updated successfully" });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).send({ error: "Error updating user" });
+  } finally {
+    client.release();
+  }
+});
+
+app.delete("/delete", async (req, res) => {
+  const { name } = req.body;
+  const client = await pool.connect();
+
+  try {
+    const query = `DELETE FROM users WHERE name = $1`;
+
+    await client.query(query, [name]);
+    res.status(200).send({ message: "User deleted successfully" });
   } catch (error) {
     console.log(error);
   } finally {
     client.release();
   }
-  res.status(200).send({ message: "successfully" });
 });
 
 app.listen(3004, () => {
