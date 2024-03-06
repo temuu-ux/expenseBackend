@@ -26,6 +26,17 @@ const pgConif = {
 
 const pool = new Pool(pgConif);
 
+// async function getPgVersion() {
+//   const client = await pool.connect();
+//   try {
+//     const result = await client.query("SELECT version()");
+//     console.log(result.rows[0]);
+//   } finally {
+//     client.release();
+//   }
+// }
+// getPgVersion();
+
 app.get("/user", async (req, res) => {
   const client = await pool.connect();
 
@@ -114,6 +125,70 @@ app.delete("/delete", async (req, res) => {
   } finally {
     client.release();
   }
+});
+
+// delete table
+// app.get("/secondtable", async (req, res) => {
+//   const client = await pool.connect();
+
+//   try {
+//     client.query("DROP TABLE secondtable");
+//   } catch (error) {
+//     console.log(error);
+//   } finally {
+//     client.release();
+//   }
+
+//   res.status(200).send({ messasge: "success" });
+// });
+
+// Record
+// app.get("/greate", async (req, res) => {
+//   const client = await pool.connect();
+
+//   try {
+//     client.query(
+//       `CREATE TABLE record ( ID SERIAL PRIMARY KEY,
+//         NAME VARCHAR(255) NOT NULL,
+//         AMOUNT INT NOT NULL)`
+//     );
+//   } catch (error) {
+//     console.log(error);
+//   } finally {
+//     client.release();
+//   }
+//   res.status(200).send({ message: "successfully greate" });
+// });
+// app.post("/record-Add", async (req, res) => {
+//   const newRecord = req.body;
+//   const client = await pool.connect();
+//   const Query = `INSERT INTO record (id,name,amount) VALUES ('${newRecord.id}','${newRecord.name}','${newRecord.amount}')`;
+
+//   try {
+//     client.query(Query);
+//   } catch (error) {
+//     console.log(error);
+//   } finally {
+//     client.release();
+//   }
+//   res.status(200).send({ message: "successfully record add" });
+// });
+
+app.get("/greate", async (req, res) => {
+  const client = await pool.connect();
+
+  try {
+    client.query(
+      `CREATE TABLE signUp ( ID SERIAL PRIMARY KEY,
+        NAME VARCHAR(255) NOT NULL,
+        AMOUNT INT NOT NULL)`
+    );
+  } catch (error) {
+    console.log(error);
+  } finally {
+    client.release();
+  }
+  res.status(200).send({ message: "successfully greate" });
 });
 
 app.listen(3004, () => {
