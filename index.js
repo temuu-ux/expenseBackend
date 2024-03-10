@@ -174,6 +174,19 @@ app.delete("/delete", async (req, res) => {
 //   res.status(200).send({ message: "successfully record add" });
 // });
 
+app.get("/addTable", async (res, req) => {
+  const client = await pool.connect();
+
+  try {
+    client.query(`ALTER TABLE signUp ADD EMAIL NOT NULL`);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    client.release();
+  }
+  res.status(200).send({ message: "success add" });
+});
+
 app.get("/greate", async (req, res) => {
   const client = await pool.connect();
 
