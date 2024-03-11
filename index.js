@@ -37,102 +37,11 @@ const pool = new Pool(pgConif);
 // }
 // getPgVersion();
 
-app.get("/user", async (req, res) => {
-  const client = await pool.connect();
-
-  try {
-    client.query("SELECT * FROM users");
-  } catch (error) {
-    console.log(error);
-  } finally {
-    client.release();
-  }
-
-  res.status(200).send({ messasge: "success" });
-});
-
-app.post("/add-user", async (req, res) => {
-  const newUser = req.body;
-
-  const client = await pool.connect();
-  console.log("asd");
-  const Query = `INSERT INTO users (name, age, phone, email) VALUES ('${newUser.name}','${newUser.age}','${newUser.phone}','${newUser.email}');`;
-  try {
-    client.query(Query);
-  } catch (e) {
-    console.log(e);
-  } finally {
-    client.release();
-  }
-  res.status(200).send({ message: "User Added successfully" });
-});
-
-app.get("/init", async (req, res) => {
-  const client = await pool.connect();
-  try {
-    client.query(
-      "CREATE TABLE users (name VARCHAR(255), age INT, phone VARCHAR(255), email VARCHAR(255))"
-    );
-  } catch (error) {
-    console.log(error);
-  } finally {
-    client.release();
-  }
-
-  res.status(200).send({ message: "success" });
-});
-
-app.put("/update", async (req, res) => {
-  // const { name } = req.params;
-  const { name } = req.body;
-  const updatedUser = req.body;
-
-  const client = await pool.connect();
-  try {
-    const query = `
-      UPDATE users 
-      SET age = $1, phone = $2, email = $3
-      WHERE name = $4
-    `;
-    const values = [
-      updatedUser.age,
-      updatedUser.phone,
-      updatedUser.email,
-      name,
-    ];
-    await client.query(query, values);
-
-    res.status(200).send({ message: "User updated successfully" });
-  } catch (error) {
-    console.error("Error updating user:", error);
-    res.status(500).send({ error: "Error updating user" });
-  } finally {
-    client.release();
-  }
-});
-
-app.delete("/delete", async (req, res) => {
-  const { name } = req.body;
-  const client = await pool.connect();
-
-  try {
-    const query = `DELETE FROM users WHERE name = $1`;
-
-    await client.query(query, [name]);
-    res.status(200).send({ message: "User deleted successfully" });
-  } catch (error) {
-    console.log(error);
-  } finally {
-    client.release();
-  }
-});
-
-// delete table;
-// app.get("/signUp", async (req, res) => {
+// app.get("/user", async (req, res) => {
 //   const client = await pool.connect();
 
 //   try {
-//     client.query("DROP TABLE signUp");
+//     client.query("SELECT * FROM users");
 //   } catch (error) {
 //     console.log(error);
 //   } finally {
@@ -141,6 +50,97 @@ app.delete("/delete", async (req, res) => {
 
 //   res.status(200).send({ messasge: "success" });
 // });
+
+// app.post("/add-user", async (req, res) => {
+//   const newUser = req.body;
+
+//   const client = await pool.connect();
+//   console.log("asd");
+//   const Query = `INSERT INTO users (name, age, phone, email) VALUES ('${newUser.name}','${newUser.age}','${newUser.phone}','${newUser.email}');`;
+//   try {
+//     client.query(Query);
+//   } catch (e) {
+//     console.log(e);
+//   } finally {
+//     client.release();
+//   }
+//   res.status(200).send({ message: "User Added successfully" });
+// });
+
+// app.get("/init", async (req, res) => {
+//   const client = await pool.connect();
+//   try {
+//     client.query(
+//       "CREATE TABLE users (name VARCHAR(255), age INT, phone VARCHAR(255), email VARCHAR(255))"
+//     );
+//   } catch (error) {
+//     console.log(error);
+//   } finally {
+//     client.release();
+//   }
+
+//   res.status(200).send({ message: "success" });
+// });
+
+// app.put("/update", async (req, res) => {
+//   // const { name } = req.params;
+//   const { name } = req.body;
+//   const updatedUser = req.body;
+
+//   const client = await pool.connect();
+//   try {
+//     const query = `
+//       UPDATE users
+//       SET age = $1, phone = $2, email = $3
+//       WHERE name = $4
+//     `;
+//     const values = [
+//       updatedUser.age,
+//       updatedUser.phone,
+//       updatedUser.email,
+//       name,
+//     ];
+//     await client.query(query, values);
+
+//     res.status(200).send({ message: "User updated successfully" });
+//   } catch (error) {
+//     console.error("Error updating user:", error);
+//     res.status(500).send({ error: "Error updating user" });
+//   } finally {
+//     client.release();
+//   }
+// });
+
+// app.delete("/delete", async (req, res) => {
+//   const { name } = req.body;
+//   const client = await pool.connect();
+
+//   try {
+//     const query = `DELETE FROM users WHERE name = $1`;
+
+//     await client.query(query, [name]);
+//     res.status(200).send({ message: "User deleted successfully" });
+//   } catch (error) {
+//     console.log(error);
+//   } finally {
+//     client.release();
+//   }
+// });
+
+// delete table;
+app.get("/signUp", async (req, res) => {
+  const client = await pool.connect();
+
+  try {
+    client.query("DROP TABLE signUp");
+  } catch (error) {
+    console.log(error);
+  } finally {
+    client.release();
+  }
+
+  res.status(200).send({ messasge: "success" });
+});
 
 // Record
 // app.get("/greate", async (req, res) => {
@@ -174,44 +174,55 @@ app.delete("/delete", async (req, res) => {
 //   res.status(200).send({ message: "successfully record add" });
 // });
 
-app.get("/addTable", async (res, req) => {
-  const client = await pool.connect();
+// app.post("/addTable", async (req, res) => {
+//   const client = await pool.connect();
 
-  try {
-    client.query(`ALTER TABLE signUp ADD EMAIL NOT NULL`);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    client.release();
-  }
-  res.status(200).send({ message: "success add" });
-});
+//   try {
+//     client.query(`ALTER TABLE signUp ADD id VARCHAR(255) `);
+//   } catch (error) {
+//     console.log(error);
+//   } finally {
+//     client.release();
+//   }
+//   res.status(200).send({ message: "success add" });
+// });
 
-app.get("/greate", async (req, res) => {
-  const client = await pool.connect();
+// app.post("/update", async (req, res) => {
+//   const client = await pool.connect();
+//   const newUser = req.body;
+//   try {
+//     client.query(`UPDATE signUp SET id='${newUser.id}' VARCHAR(255)`);
+//   } catch (error) {
+//     console.log(error);
+//   } finally {
+//     client.release;
+//   }
+//   res.status(200).send({ message: "success update" });
+// });
 
-  try {
-    client.query(
-      `CREATE TABLE signUp ( ID SERIAL PRIMARY KEY,
-        NAME VARCHAR(255) NOT NULL,
-        PASSWORD INT NOT NULL)`
-    );
-  } catch (error) {
-    console.log(error);
-  } finally {
-    client.release();
-  }
-  res.status(200).send({ message: "successfully greate" });
-});
+// app.get("/uy", async (req, res) => {
+//   const client = await pool.connect();
+
+//   try {
+//     client.query(
+//       "CREATE TABLE signup ( id varchar(250) NOT NULL,email varchar(50) NOT NULL, name VARCHAR(50) NOT NULL, password VARCHAR(50));"
+//     );
+//   } catch (error) {
+//     console.log(error);
+//   } finally {
+//     client.release();
+//   }
+//   res.status(200).send({ message: "successfully greate" });
+// });
 
 app.post("/add", async (req, res) => {
   const client = await pool.connect();
   const newUser = req.body;
+  console.log("newUser", newUser);
 
+  const Query = `INSERT INTO signUp (name,email,password,id) VALUES ('${newUser.name}', '${newUser.email}' ,'${newUser.password}' ,'${newUser.id}')`;
   try {
-    client.query(
-      `INSERT INTO signUp (id,name,password) VALUES ('${newUser.id}','${newUser.name}','${newUser.password}' )`
-    );
+    client.query(Query);
   } catch (error) {
     console.log(error);
   } finally {
