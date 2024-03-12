@@ -1,30 +1,19 @@
-const { Pool } = require("pg");
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const dotenv = require("dotenv");
-// const nanoid = require("nanoid");
-// const id = nanoid();
 
-dotenv.config();
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
 
-const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, PGPORT } = process.env;
+// const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, PGPORT } = process.env;
 
-const pgConif = {
-  host: PGHOST,
-  database: PGDATABASE,
-  username: PGUSER,
-  password: PGPASSWORD,
-  port: PGPORT,
-  ssl: {
-    require: true,
-  },
-};
+// const pgConif = {
+//   host: PGHOST,
+//   database: PGDATABASE,
+//   username: PGUSER,
+//   password: PGPASSWORD,
+//   port: PGPORT,
+//   ssl: {
+//     require: true,
+//   },
+// };
 
-const pool = new Pool(pgConif);
+// const pool = new Pool(pgConif);
 
 // async function getPgVersion() {
 //   const client = await pool.connect();
@@ -215,22 +204,6 @@ const pool = new Pool(pgConif);
 //   res.status(200).send({ message: "successfully greate" });
 // });
 
-app.post("/add", async (req, res) => {
-  const client = await pool.connect();
-  const newUser = req.body;
-  console.log("newUser", newUser);
 
-  const Query = `INSERT INTO register (name,email,password,id) VALUES ('${newUser.name}', '${newUser.email}' ,'${newUser.password}' ,'${newUser.id}')`;
-  try {
-    client.query(Query);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    client.release();
-  }
-  res.status(200).send({ message: "success" });
-});
 
-app.listen(3004, () => {
-  console.log("Server is running on port 3004");
-});
+//
