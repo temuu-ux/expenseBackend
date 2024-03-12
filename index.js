@@ -128,19 +128,19 @@ const pool = new Pool(pgConif);
 // });
 
 // delete table;
-app.get("/signUp", async (req, res) => {
-  const client = await pool.connect();
+// app.get("/signUp", async (req, res) => {
+//   const client = await pool.connect();
 
-  try {
-    client.query("DROP TABLE signUp");
-  } catch (error) {
-    console.log(error);
-  } finally {
-    client.release();
-  }
+//   try {
+//     client.query("DROP TABLE signUp");
+//   } catch (error) {
+//     console.log(error);
+//   } finally {
+//     client.release();
+//   }
 
-  res.status(200).send({ messasge: "success" });
-});
+//   res.status(200).send({ messasge: "success" });
+// });
 
 // Record
 // app.get("/greate", async (req, res) => {
@@ -205,7 +205,7 @@ app.get("/signUp", async (req, res) => {
 
 //   try {
 //     client.query(
-//       "CREATE TABLE signup ( id varchar(250) NOT NULL,email varchar(50) NOT NULL, name VARCHAR(50) NOT NULL, password VARCHAR(50));"
+//       "CREATE TABLE register ( id varchar(250) NOT NULL ,email varchar(50) NOT NULL PRIMARY KEY, name VARCHAR(50) NOT NULL, password VARCHAR(50));"
 //     );
 //   } catch (error) {
 //     console.log(error);
@@ -220,7 +220,7 @@ app.post("/add", async (req, res) => {
   const newUser = req.body;
   console.log("newUser", newUser);
 
-  const Query = `INSERT INTO signUp (name,email,password,id) VALUES ('${newUser.name}', '${newUser.email}' ,'${newUser.password}' ,'${newUser.id}')`;
+  const Query = `INSERT INTO register (name,email,password,id) VALUES ('${newUser.name}', '${newUser.email}' ,'${newUser.password}' ,'${newUser.id}')`;
   try {
     client.query(Query);
   } catch (error) {
